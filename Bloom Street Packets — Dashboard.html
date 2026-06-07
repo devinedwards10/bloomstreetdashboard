@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<!-- saved from url=(0059)file:///Users/devin/Downloads/bloom_street_dashboard_5.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloom Street Packets — Dashboard</title>
+<link href="./Bloom Street Packets — Dashboard_files/css2" rel="stylesheet">
+<script src="./Bloom Street Packets — Dashboard_files/chart.umd.js"></script>
+<style>
+:root{
+  --green:#2d6a4f;--gl:#40916c;--sage:#d8f3dc;--saged:#b7e4c7;
+  --rust:#bc4749;--rustp:#fde8e8;--gold:#c9a84c;--goldp:#fdf3d0;
+  --slate:#1e2d3d;--sm:#4a5568;--sl:#718096;
+  --border:#e2d9cc;--card:#fff;--bg:#f4efe6;--bg2:#ede7dc;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--slate);font-size:13px;line-height:1.5;}
+
+.hdr{background:linear-gradient(135deg,#1e4d35,var(--green));padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:200;box-shadow:0 2px 10px rgba(0,0,0,0.2);}
+.logo{font-family:'DM Serif Display',serif;color:#fff;font-size:1rem;}
+.logo-sub{color:rgba(255,255,255,0.45);font-size:9px;letter-spacing:.08em;text-transform:uppercase;}
+.hdr-badge{background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.85);font-size:10px;padding:3px 10px;border-radius:20px;}
+
+.tabs{background:#fff;border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:0 1.5rem;position:sticky;top:52px;z-index:100;}
+.tab{padding:10px 18px;font-size:12px;font-weight:500;color:var(--sl);border:none;background:none;cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;transition:all .15s;}
+.tab:hover{color:var(--green);}
+.tab.active{color:var(--green);border-bottom-color:var(--green);font-weight:600;}
+
+.main{padding:1.2rem 1.5rem;max-width:1080px;margin:0 auto;}
+.pg{display:none;}.pg.active{display:block;animation:fi .2s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+
+.pg-title{font-family:'DM Serif Display',serif;font-size:1.25rem;margin-bottom:2px;}
+.pg-sub{font-size:11px;color:var(--sl);margin-bottom:1rem;}
+
+/* KPI CARDS */
+.krow{display:grid;gap:10px;margin-bottom:1rem;}
+.k4{grid-template-columns:repeat(4,1fr);}
+.k3{grid-template-columns:repeat(3,1fr);}
+.kc{background:var(--card);border-radius:10px;padding:.75rem 1rem;border:1px solid var(--border);border-top:3px solid var(--green);}
+.kc.r{border-top-color:var(--rust);}
+.kc.y{border-top-color:var(--gold);}
+.kc.s{border-top-color:var(--gl);}
+.kl{font-size:10px;color:var(--sl);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;}
+.kv{font-size:1.25rem;font-weight:700;line-height:1.15;}
+.ks{font-size:11px;margin-top:1px;}
+.up{color:var(--gl);font-weight:600;}
+.dn{color:var(--rust);font-weight:600;}
+.wn{color:var(--gold);font-weight:600;}
+
+/* CARDS */
+.card{background:var(--card);border-radius:12px;padding:.95rem 1.05rem;border:1px solid var(--border);margin-bottom:.85rem;}
+.ct{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--sm);margin-bottom:.7rem;}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.85rem;}
+
+/* CHARTS */
+.ch{position:relative;width:100%;height:165px;}
+.ch-s{position:relative;width:100%;height:135px;}
+
+/* INSIGHTS */
+.ins{padding:8px 10px;border-radius:7px;font-size:11.5px;line-height:1.55;margin-bottom:6px;display:flex;gap:8px;}
+.ins.g{background:var(--sage);color:#1a4731;border-left:3px solid var(--gl);}
+.ins.r{background:var(--rustp);color:#7c1d1d;border-left:3px solid var(--rust);}
+.ins.y{background:var(--goldp);color:#6b4c0a;border-left:3px solid var(--gold);}
+
+/* BARS */
+.br{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.bl{font-size:11px;color:var(--sm);min-width:115px;max-width:115px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bt{flex:1;background:var(--bg2);border-radius:3px;height:7px;overflow:hidden;}
+.bf{height:100%;border-radius:3px;}
+.bv{font-size:11px;font-weight:600;min-width:62px;text-align:right;}
+
+/* TABLE */
+.dt{width:100%;border-collapse:collapse;font-size:12px;}
+.dt th{text-align:left;padding:6px 8px;border-bottom:1.5px solid var(--border);color:var(--sl);font-size:10px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;}
+.dt td{padding:7px 8px;border-bottom:1px solid var(--bg);vertical-align:middle;}
+.dt tr:last-child td{border-bottom:none;}
+.dt tr:hover td{background:var(--bg);}
+
+/* TAGS */
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;}
+.tag.g{background:var(--sage);color:var(--green);}
+.tag.r{background:var(--rustp);color:var(--rust);}
+.tag.y{background:var(--goldp);color:#7a5c1e;}
+
+/* SOFTWARE */
+.swr{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--bg);}
+.swr:last-child{border-bottom:none;}
+.sw-name{font-size:12px;font-weight:500;}
+.sw-note{font-size:10.5px;color:var(--sl);}
+.sw-cost{font-size:13px;font-weight:700;}
+
+/* PLAN */
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem;margin-bottom:.85rem;}
+.plan-card{border-radius:11px;padding:.9rem;border:1px solid;}
+.p30{background:#f0faf4;border-color:var(--saged);}
+.p60{background:var(--goldp);border-color:#e8c56a;}
+.p90{background:var(--rustp);border-color:#f0a0a0;}
+.plan-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.55rem;}
+.p30 .plan-title{color:var(--green);}
+.p60 .plan-title{color:#7a5c1e;}
+.p90 .plan-title{color:var(--rust);}
+.plan-item{font-size:11.5px;line-height:1.5;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.05);display:flex;gap:6px;}
+.plan-item:last-child{border-bottom:none;}
+
+/* ACTION */
+.ai{display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--bg);}
+.ai:last-child{border-bottom:none;}
+.anum{width:23px;height:23px;border-radius:50%;background:var(--green);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.anum.y{background:var(--gold);}.anum.r{background:var(--rust);}
+.atitle{font-size:12.5px;font-weight:600;margin-bottom:2px;}
+.adesc{font-size:11px;color:var(--sl);line-height:1.55;}
+.aimp{font-size:11px;font-weight:600;margin-top:3px;}
+
+.divider{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--sl);margin:1rem 0 .5rem;padding-bottom:4px;border-bottom:1px solid var(--border);}
+
+.exec-box{background:linear-gradient(135deg,#f0faf4,#e6f4ec);border:1px solid var(--saged);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1rem;}
+.exec-box h3{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--green);margin-bottom:.4rem;}
+.exec-box p{font-size:12px;color:var(--sm);line-height:1.6;}
+
+.footer{text-align:center;padding:1rem;font-size:10px;color:var(--sl);border-top:1px solid var(--border);}
+.footer strong{color:var(--green);}
+
+@media(max-width:860px){.k4,.k3{grid-template-columns:repeat(2,1fr);}.g2,.plan-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span style="font-size:18px;">🌸</span>
+    <div><div class="logo">Bloom Street Packets</div><div class="logo-sub">Business Dashboard · May 2026</div></div>
+  </div>
+  <span class="hdr-badge">Cascade Strategy LLC</span>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="go(&#39;home&#39;,this)">🏠 Overview</button>
+  <button class="tab" onclick="go(&#39;revenue&#39;,this)">📈 Revenue</button>
+  <button class="tab" onclick="go(&#39;pricing&#39;,this)">🏷️ Pricing</button>
+  <button class="tab" onclick="go(&#39;costs&#39;,this)">✂️ Costs</button>
+  <button class="tab" onclick="go(&#39;website&#39;,this)">🌐 Website Audit</button>
+  <button class="tab" onclick="go(&#39;growth&#39;,this)">🌱 Growth Priorities</button>
+  <button class="tab" onclick="go(&#39;plan&#39;,this)">✅ Action Plan</button>
+  <button class="tab" onclick="go(&#39;tracker&#39;,this)">📊 Monthly Tracker</button>
+</div>
+
+<div class="main">
+
+<!-- ═══ OVERVIEW ═══ -->
+<div class="pg active" id="pg-home">
+  <div class="exec-box">
+    <h3>Here's where things stand, Afton.</h3>
+    <p>Your business has strong fundamentals — a healthy gross margin, growing Shopify sales, and loyal customers. The two biggest opportunities are straightforward: your prices are below market, and a few costs are higher than they need to be. Both are within your control and don't require changes to how you operate.</p>
+  </div>
+
+  <div class="krow k4">
+    <div class="kc s"><div class="kl">April Revenue</div><div class="kv">$24,692</div><div class="ks up">Peak season month</div></div>
+    <div class="kc s"><div class="kl">Gross Profit</div><div class="kv">$14,148</div><div class="ks up">57.3% gross margin ✓</div></div>
+    <div class="kc y"><div class="kl">Net Profit</div><div class="kv">$4,636</div><div class="ks wn">18.8% net margin</div></div>
+    <div class="kc r"><div class="kl">Operating Expenses</div><div class="kv">$9,512</div><div class="ks dn">Etsy fees are #1 driver</div></div>
+  </div>
+
+  <div class="krow k4">
+    <div class="kc r"><div class="kl">Avg Order Value</div><div class="kv">$59</div><div class="ks dn">↓ from $92 in 2022</div></div>
+    <div class="kc y"><div class="kl">Break-Even / Month</div><div class="kv">?</div><div class="ks wn">Need slow-month P&amp;L data</div><div class="kn">Ask Afton for Jan or Feb P&amp;L</div></div>
+    <div class="kc s"><div class="kl">Shopify Share (YTD)</div><div class="kv">43%</div><div class="ks up">↑ Was 6% in 2023</div></div>
+    <div class="kc y"><div class="kl">Ad Spend</div><div class="kv">$3,695/mo</div><div class="ks wn">⚠️ ROI unknown — not tracked</div><div class="kn">Pull conversion reports before cutting</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">April Revenue Sources</div>
+      <div class="ch-s"><canvas id="c-rev" width="270" height="270" style="display: block; box-sizing: border-box; height: 135px; width: 135px;"></canvas></div>
+      <div style="margin-top:9px;">
+        <div class="br"><span class="bl">Etsy Sales</span><div class="bt"><div class="bf" style="width:100%;background:#2d6a4f;"></div></div><span class="bv">$11,526</span></div>
+        <div class="br"><span class="bl">J.Jill / Custom ⚠️</span><div class="bt"><div class="bf" style="width:63%;background:#c9a84c;"></div></div><span class="bv wn" title="Pending bookkeeper confirmation">$7,275</span></div>
+        <div class="br"><span class="bl">Shopify</span><div class="bt"><div class="bf" style="width:47%;background:#40916c;"></div></div><span class="bv">$5,461</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">April Expenses</div>
+      <div class="ch-s"><canvas id="c-exp" width="270" height="270" style="display: block; box-sizing: border-box; height: 135px; width: 135px;"></canvas></div>
+      <div class="ins r" style="margin-top:9px;"><span>⚠️</span><div>Etsy fees ($4,051) are your single biggest expense — more than your net profit. The Action Plan tab has specific steps to address this.</div></div>
+    </div>
+  </div>
+
+  <div class="divider">📌 The 3 things that matter most right now</div>
+  <div class="ins r"><span>1️⃣</span><div><strong>Your prices are below market.</strong> You're 20–38% cheaper than main competitors on mid-size orders, with no competitive reason to be. Raising prices is your biggest immediate profit lever — see the Pricing tab.</div></div>
+  <div class="ins y"><span>2️⃣</span><div><strong>Average order value is declining.</strong> Down from $92 in 2022 to $59 today. The fix is a combination of higher prices and nudging customers toward your 50-packet shipping sweet spot.</div></div>
+  <div class="ins g"><span>3️⃣</span><div><strong>Shopify is your fastest-growing, most profitable channel.</strong> Already at $29K in just 5 months of 2026. Every sale there saves you 6–10% in Etsy fees. Growing it intentionally is one of the best long-term moves you can make.</div></div>
+
+  <div class="divider">🌐 Website &amp; Presentation Recommendations</div>
+  <div class="card">
+    <div class="ct">Three Changes to Your Website That Will Directly Increase Sales</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.85rem;">
+
+      <div style="background:var(--bg);border-radius:9px;padding:.85rem;">
+        <div style="font-size:14px;margin-bottom:5px;">📸</div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:4px;">Upgrade Your Photos</div>
+        <div style="font-size:11.5px;color:var(--sm);line-height:1.55;">On Etsy and Shopify, photos are your sales team. Add lifestyle shots — packets on a wedding table, in a baby shower gift bag, at a memorial. These convert far better than product-only images and improve the ROI on every ad you run.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-top:6px;">Est. impact: +$400–1,200/mo from better conversion · one-time cost $200–600</div>
+      </div>
+
+      <div style="background:var(--bg);border-radius:9px;padding:.85rem;">
+        <div style="font-size:14px;margin-bottom:5px;">📂</div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:4px;">Add Niche Collections</div>
+        <div style="font-size:11.5px;color:var(--sm);line-height:1.55;">Create dedicated Shopify pages for each event type — Weddings, Baby Showers, Memorials, Earth Day. People search Google for "wildflower seed packets for baby showers" — you should be showing up. Niche pages also convert better because visitors land exactly where they want to be.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-top:6px;">Est. impact: +$200–600/mo from organic search after 3–6 months · free to build</div>
+      </div>
+
+      <div style="background:var(--bg);border-radius:9px;padding:.85rem;">
+        <div style="font-size:14px;margin-bottom:5px;">📌</div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:4px;">Fix Pinterest</div>
+        <div style="font-size:11.5px;color:var(--sm);line-height:1.55;">Pinterest is one of the strongest platforms for wedding and event products. It didn't work before because it wasn't set up right. Pin directly to product pages, use keyword-rich descriptions, and organize boards by event type. Consistent pinning compounds over time at zero cost.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-top:6px;">Est. impact: +$90–600/mo in Shopify traffic within 6–12 months · completely free</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══ REVENUE ═══ -->
+<div class="pg" id="pg-revenue">
+  <div class="pg-title">Revenue Trends</div>
+  <div class="pg-sub">How your sales have moved over time — by channel, by season, by product</div>
+
+  <div class="card">
+    <div class="ct">Annual Revenue — Etsy vs. Shopify (2021–2026 YTD)</div>
+    <div class="ch"><canvas id="c-annual" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div>
+    <div class="ins g" style="margin-top:9px;"><span>🚀</span><div>Shopify has gone from nearly nothing in 2023 to $29,100 in just 5 months of 2026 — while Etsy has declined 42% from its 2023 peak. Together your channels are growing, but the mix is shifting in a healthier direction.</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Monthly Seasonality — Etsy (2022–2025)</div>
+      <div class="ch"><canvas id="c-seasonal" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div>
+      <p style="font-size:11px;color:var(--sl);margin-top:7px;">March &amp; April are your peak every year. Start preparing inventory and new designs by January to be ready when orders spike.</p>
+    </div>
+    <div class="card">
+      <div class="ct">April by Year — Peak Month Comparison</div>
+      <table class="dt">
+        <thead><tr><th>Year</th><th>Etsy Revenue</th><th>Orders</th><th>Avg Order</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>2022</td><td>$10,819</td><td>117</td><td>$92.47</td><td><span class="tag y">Year 1</span></td></tr>
+          <tr><td>2023</td><td><strong>$26,426</strong></td><td>315</td><td>$83.89</td><td><span class="tag g">🏆 Best</span></td></tr>
+          <tr><td>2024</td><td>$14,404</td><td>196</td><td>$73.49</td><td><span class="tag r">↓ 45%</span></td></tr>
+          <tr><td>2025</td><td>$10,378</td><td>161</td><td>$64.46</td><td><span class="tag r">↓ 28%</span></td></tr>
+          <tr><td>2026</td><td>$11,278</td><td>190</td><td>$59.36</td><td><span class="tag g">↑ 8.7%</span></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:11px;color:var(--sl);margin-top:8px;">April 2026 is trending up — a good sign. The average order value decline is a pricing issue, not a demand issue.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">2026 YTD — Etsy vs. Prior Year + Shopify</div>
+    <table class="dt">
+      <thead><tr><th>Month</th><th>Etsy 2025</th><th>Etsy 2026</th><th>vs. Last Year</th><th>Shopify 2026</th><th>Combined</th></tr></thead>
+      <tbody>
+        <tr><td>January</td><td>$7,374</td><td>$5,488</td><td><span class="tag r">↓ 25.6%</span></td><td>$3,961</td><td>$9,449</td></tr>
+        <tr><td>February</td><td>$7,291</td><td>$6,494</td><td><span class="tag r">↓ 10.9%</span></td><td>$7,764</td><td>$14,258</td></tr>
+        <tr><td>March</td><td>$10,632</td><td>$10,567</td><td><span class="tag y">↓ 0.6%</span></td><td>$8,816</td><td>$19,383</td></tr>
+        <tr><td>April</td><td>$10,378</td><td>$11,278</td><td><span class="tag g">↑ 8.7%</span></td><td>$5,613</td><td>$16,891</td></tr>
+        <tr><td>May*</td><td>$8,472</td><td>$4,413</td><td><span class="tag r">Partial</span></td><td>$2,954</td><td>$7,367</td></tr>
+        <tr style="background:var(--bg);font-weight:600;"><td>YTD</td><td>$44,147</td><td>$38,239</td><td><span class="tag r">↓ 13.4%</span></td><td>$29,108</td><td>$67,347</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:10.5px;color:var(--sl);margin-top:6px;">*May 2026 Etsy is incomplete — pulled mid-month. The combined total shows your overall business is growing when both channels are counted together.</p>
+  </div>
+
+  <div class="card">
+    <div class="ct">Top Products by Revenue — Etsy 2022–2025</div>
+    <div class="g2" style="margin-bottom:0;">
+      <div>
+        <div class="br"><span class="bl">🐝 Bee Friendly</span><div class="bt"><div class="bf" style="width:100%;background:#2d6a4f;"></div></div><span class="bv">$89,141</span></div>
+        <div class="br"><span class="bl">🌸 CA Poppy</span><div class="bt"><div class="bf" style="width:42%;background:#40916c;"></div></div><span class="bv">$37,758</span></div>
+        <div class="br"><span class="bl">💙 Forget Me Not</span><div class="bt"><div class="bf" style="width:37%;background:#40916c;"></div></div><span class="bv">$32,554</span></div>
+        <div class="br"><span class="bl">🐰 Rabbit Blue</span><div class="bt"><div class="bf" style="width:24%;background:#b7e4c7;"></div></div><span class="bv">$21,455</span></div>
+        <div class="br"><span class="bl">🐰 Rabbit Pink</span><div class="bt"><div class="bf" style="width:20%;background:#b7e4c7;"></div></div><span class="bv">$18,264</span></div>
+      </div>
+      <div>
+        <div class="br"><span class="bl">📷 Photo Memorial</span><div class="bt"><div class="bf" style="width:19%;background:#8a6ab5;"></div></div><span class="bv">$16,998</span></div>
+        <div class="br"><span class="bl">🦋 Butterfly</span><div class="bt"><div class="bf" style="width:18%;background:#40916c;"></div></div><span class="bv">$15,735</span></div>
+        <div class="br"><span class="bl">🌼 Baptism/Communion</span><div class="bt"><div class="bf" style="width:14%;background:#40916c;"></div></div><span class="bv">$12,749</span></div>
+        <div class="br"><span class="bl">🌻 Sunflower</span><div class="bt"><div class="bf" style="width:10%;background:#c9a84c;"></div></div><span class="bv">$9,329</span></div>
+        <div class="br"><span class="bl">🌍 Earth Day</span><div class="bt"><div class="bf" style="width:8%;background:#c9a84c;"></div></div><span class="bv">$7,272</span></div>
+      </div>
+    </div>
+    <div class="ins y" style="margin-top:10px;"><span>⚠️</span><div><strong>Your top seller changed in 2025.</strong> Peter Rabbit Blue &amp; Pink overtook Bee Friendly as the #1 design. Make sure your inventory levels and ad spend reflect where demand actually is now — not where it was two years ago.</div></div>
+  </div>
+</div>
+
+<!-- ═══ PRICING ═══ -->
+<div class="pg" id="pg-pricing">
+  <div class="pg-title">Pricing Analysis &amp; Recommendations</div>
+  <div class="pg-sub">Cascade Strategy's pricing recommendations based on competitor benchmarking and your April 2026 data</div>
+
+  <div class="ins b" style="margin-bottom:.9rem;"><span>📋</span><div>The prices below are <strong>Cascade Strategy's recommendations</strong> — not changes that have been made. These are based on competitor research, your order history, and your 2024 experience raising prices with no customer pushback. Final decisions are yours.</div></div>
+
+  <div class="krow k4">
+    <div class="kc s"><div class="kl">If Conservative (+9%)</div><div class="kv">+$1,437/mo</div><div class="ks up">Projected · net margin → 23%</div></div>
+    <div class="kc s"><div class="kl">If Moderate (+15%)</div><div class="kv">+$2,395/mo</div><div class="ks up">Projected · net margin → 26%</div></div>
+    <div class="kc y"><div class="kl">If Full Adjustment (+20%)</div><div class="kv">+$3,193/mo</div><div class="ks up">Projected · net margin → 28%</div></div>
+    <div class="kc"><div class="kl">You Keep Per $1 Increase</div><div class="kv">$0.94</div><div class="ks up">Confirmed — costs don't change</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Revenue Impact by Scenario</div>
+      <div class="ch-s"><canvas id="c-scenario" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div>
+      <p style="font-size:11px;color:var(--sl);margin-top:7px;"><strong>Projected impact</strong> based on April channel revenue of $16,987 at the same order volume. Because your costs stay flat, nearly all the gain flows to net income. Actual results depend on demand staying consistent — which your 2024 price increase suggests is likely.</p>
+    </div>
+    <div class="card">
+      <div class="ct">Etsy Market Comparison — 50-Pack Price</div>
+      <div class="br"><span class="bl">FavorFully</span><div class="bt"><div class="bf" style="width:100%;background:#2d6a4f;"></div></div><span class="bv">$2.01</span></div>
+      <div class="br"><span class="bl">Milestone Gift</span><div class="bt"><div class="bf" style="width:82%;background:#40916c;"></div></div><span class="bv">$1.65</span></div>
+      <div class="br"><span class="bl">White Confetti</span><div class="bt"><div class="bf" style="width:73%;background:#b7e4c7;"></div></div><span class="bv">$1.47</span></div>
+      <div class="br"><span class="bl">Peony Lace</span><div class="bt"><div class="bf" style="width:66%;background:#b7e4c7;"></div></div><span class="bv">$1.32</span></div>
+      <div class="br"><span class="bl">Mitten Blossom</span><div class="bt"><div class="bf" style="width:62%;background:#b7e4c7;"></div></div><span class="bv">$1.25</span></div>
+      <div class="br"><span class="bl">Sweet B</span><div class="bt"><div class="bf" style="width:60%;background:#c9a84c;"></div></div><span class="bv">$1.20</span></div>
+      <div class="br"><span class="bl">Plain Jane</span><div class="bt"><div class="bf" style="width:56%;background:#c9a84c;"></div></div><span class="bv">$1.12</span></div>
+      <div class="br" style="background:var(--rustp);border-radius:5px;padding:3px 5px;">
+        <span class="bl"><strong>You ⚠️</strong></span><div class="bt"><div class="bf" style="width:57%;background:#bc4749;"></div></div><span class="bv dn"><strong>$1.15</strong></span>
+      </div>
+      <p style="font-size:11px;color:var(--sl);margin-top:8px;"><strong>Our recommendation:</strong> Move your Etsy 50-pack listing to $1.35–$1.45. You mentioned not wanting to be the lowest-priced option — this puts you comfortably in the middle of the market while still being clearly competitive.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Full Pricing Grid — Current vs. Our Recommendation (One-Sided per Packet)</div>
+    <table class="dt">
+      <thead><tr><th>Order Size</th><th>Current Price</th><th>Our Recommendation</th><th>Difference</th><th>4imprint (Competitor)</th><th>Where You'd Stand</th></tr></thead>
+      <tbody>
+        <tr><td>50–149 packets</td><td>$1.55</td><td><strong class="up">$1.75</strong></td><td><span class="tag g">+$0.20</span></td><td>$2.09</td><td>Still 16% cheaper</td></tr>
+        <tr><td>150–249 packets</td><td>$1.25</td><td><strong class="up">$1.38</strong></td><td><span class="tag g">+$0.13</span></td><td>$1.55</td><td>Still 11% cheaper</td></tr>
+        <tr><td>250–499 packets</td><td>$0.80</td><td><strong class="up">$0.90</strong></td><td><span class="tag g">+$0.10</span></td><td>$0.95</td><td>Still competitive</td></tr>
+        <tr><td>500–999 packets</td><td>$0.59</td><td><strong class="up">$0.70</strong></td><td><span class="tag g">+$0.11</span></td><td>$0.95</td><td>Still 26% cheaper</td></tr>
+        <tr><td>1,000–1,999 packets</td><td>$0.48</td><td><strong class="up">$0.56</strong></td><td><span class="tag g">+$0.08</span></td><td>$0.62</td><td>Still 10% cheaper</td></tr>
+        <tr><td>2,000–2,999 packets</td><td>$0.45</td><td><strong class="up">$0.47</strong></td><td><span class="tag y">+$0.02</span></td><td>$0.47</td><td>Matches them</td></tr>
+        <tr><td>3,000–4,999 packets</td><td>$0.43–$0.44</td><td><strong class="up">$0.44–$0.45</strong></td><td><span class="tag y">+$0.01</span></td><td>$0.47</td><td>Slight lead</td></tr>
+        <tr style="background:var(--rustp);"><td><strong>5,000–10,000 packets</strong></td><td>$0.33</td><td><strong class="up">$0.38 — fix first</strong></td><td><span class="tag r">⚠️ Urgent</span></td><td>$0.37–$0.39</td><td>Currently below their price — only tier where you're losing ground</td></tr>
+      </tbody>
+    </table>
+    <div class="ins g" style="margin-top:10px;"><span>✅</span><div><strong>Our recommendation:</strong> Implement these prices starting with the 5K+ tier (most urgent) and the 50–149 tier (most orders fall here). Every recommended price still keeps you below or at parity with 4imprint — you remain the better value even after the increase. Low risk across all tiers.</div></div>
+  </div>
+</div>
+
+<!-- ═══ COSTS ═══ -->
+<div class="pg" id="pg-costs">
+  <div class="pg-title">Costs &amp; Software</div>
+  <div class="pg-sub">Where your money goes · What to keep · What to reduce</div>
+
+  <div class="krow k4">
+    <div class="kc r"><div class="kl">COGS (April)</div><div class="kv">$10,544</div><div class="ks">42.7% of revenue — healthy</div></div>
+    <div class="kc r"><div class="kl">Etsy Fees</div><div class="kv">$4,051</div><div class="ks dn">35% of your Etsy revenue</div></div>
+    <div class="kc y"><div class="kl">Total Ad Spend</div><div class="kv">$3,695</div><div class="ks wn">ROI unconfirmed</div></div>
+    <div class="kc y"><div class="kl">Software / Month</div><div class="kv">$150</div><div class="ks wn">$1,795/year in subscriptions</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Cost of Goods Sold — $10,544</div>
+      <div class="ch-s"><canvas id="c-cogs" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div>
+      <div class="ins g" style="margin-top:9px;"><span>✅</span><div>Your 57% gross margin reflects strong wholesale relationships. COGS move with volume — this is normal and healthy.</div></div>
+    </div>
+    <div class="card">
+      <div class="ct">Operating Expenses — $9,512</div>
+      <div class="ch-s"><canvas id="c-opex" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div>
+      <div class="ins r" style="margin-top:9px;"><span>⚠️</span><div>Etsy fees + advertising = 80% of your operating costs. These are the main targets for improvement after pricing.</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Your Software Subscriptions</div>
+    <div class="swr"><div><div class="sw-name">🛍️ Shopify</div><div class="sw-note">Essential — your fastest-growing channel</div></div><div style="text-align:right;"><div class="sw-cost">$39/mo</div><span class="tag g">Keep</span></div></div>
+    <div class="swr"><div><div class="sw-name">🎨 Adobe Illustrator</div><div class="sw-note">Core design tool for your packet artwork</div></div><div style="text-align:right;"><div class="sw-cost">$22.99/mo</div><span class="tag g">Keep</span></div></div>
+    <div class="swr"><div><div class="sw-name">🎨 Canva</div><div class="sw-note">$78/year — a great affordable supplement</div></div><div style="text-align:right;"><div class="sw-cost">$6.50/mo</div><span class="tag g">Keep</span></div></div>
+    <div class="swr"><div><div class="sw-name">📦 ShipStation</div><div class="sw-note">Useful in peak months — check if it earns its keep in slower ones</div></div><div style="text-align:right;"><div class="sw-cost">$14.99/mo</div><span class="tag y">Review</span></div></div>
+    <div class="swr"><div><div class="sw-name">🤖 OpenAI (ChatGPT)</div><div class="sw-note">Helpful for ideas and suggestions</div></div><div style="text-align:right;"><div class="sw-cost">$20/mo</div><span class="tag y">Review</span></div></div>
+    <div class="swr" style="background:var(--rustp);border-radius:7px;padding:7px 6px;margin:3px 0;"><div><div class="sw-name">📊 QuickBooks</div><div class="sw-note">Wave Accounting is free and covers everything you need — worth switching with your bookkeeper's help</div></div><div style="text-align:right;"><div class="sw-cost dn">$38/mo</div><span class="tag r">Replace</span></div></div>
+    <div class="swr" style="background:var(--rustp);border-radius:7px;padding:7px 6px;margin:3px 0;"><div><div class="sw-name">💻 Microsoft (unconfirmed)</div><div class="sw-note">Worth a quick check — if unused, easy to cancel</div></div><div style="text-align:right;"><div class="sw-cost dn">$8.66/mo</div><span class="tag r">Investigate</span></div></div>
+    <div class="swr"><div><div class="sw-name">📧 Mailchimp</div><div class="sw-note">Free — and underused. Your past customers are your warmest audience.</div></div><div style="text-align:right;"><div class="sw-cost up">Free</div><span class="tag g">Use more</span></div></div>
+    <div style="margin-top:11px;padding-top:9px;border-top:1.5px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <div><div style="font-size:10px;color:var(--sl);text-transform:uppercase;letter-spacing:.04em;">Current total</div><div style="font-size:1.05rem;font-weight:700;">$150/mo · $1,795/yr</div></div>
+      <div style="text-align:right;"><div style="font-size:10px;color:var(--sl);text-transform:uppercase;letter-spacing:.04em;">After QB + Microsoft</div><div style="font-size:1.05rem;font-weight:700;color:var(--gl);">Save ~$47–$80/mo</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Cost Reduction Summary</div>
+    <table class="dt">
+      <thead><tr><th>Item</th><th>Current</th><th>Action</th><th>Est. Savings</th><th>Priority</th></tr></thead>
+      <tbody>
+        <tr><td>QuickBooks</td><td>$38 + $227 payments</td><td>Switch to Wave (free) — discuss with your bookkeeper</td><td class="up">$265+/mo</td><td><span class="tag r">High</span></td></tr>
+        <tr><td>Microsoft charge</td><td>$8.66/mo</td><td>Identify on bank statement — cancel if unused</td><td class="up">$8.66/mo</td><td><span class="tag r">High</span></td></tr>
+        <tr><td>Etsy advertising</td><td>$1,719/mo</td><td>Pull conversion data first — can't recommend cutting until ROI is known</td><td class="wn">? — need conversion data</td><td><span class="tag r">High</span></td></tr>
+        <tr><td>External advertising</td><td>$1,975/mo</td><td>Confirm Google ad ROI first — same issue as Etsy ads</td><td class="wn">? — need conversion data</td><td><span class="tag y">Medium</span></td></tr>
+        <tr style="background:var(--goldp);"><td>Software &amp; Apps mystery</td><td>$435/mo total · ~$150 identified</td><td>~$285/month is unaccounted for — needs bank statement audit to identify</td><td class="wn">? — audit needed first</td><td><span class="tag r">High</span></td></tr>
+      </tbody>
+    </table>
+    <div class="ins y" style="margin-top:9px;"><span>⚠️</span><div><strong>Confirmed savings: $274/month</strong> (QB + Microsoft — certain, zero risk). Additional savings of $500–$1,600/month are possible from ads and mystery software, but those numbers depend on pulling conversion data and auditing her bank statement first. We don't have that yet.</div></div>
+  </div>
+</div>
+
+
+<!-- ═══ WEBSITE AUDIT ═══ -->
+<div class="pg" id="pg-website">
+  <div class="pg-title">Website Audit — bloomstreetpackets.com</div>
+  <div class="pg-sub">Reviewed June 2026 · Based on live site analysis · Recommendations from Cascade Strategy LLC</div>
+
+  <div class="ins g" style="margin-bottom:.9rem;"><span>✅</span><div><strong>Overall impression:</strong> The site is better than expected — clean Shopify store, compelling brand story about her grandfather, 125 reviews at 96% five-star, and collections organized by event type. It's not broken. But there are specific issues costing her sales right now.</div></div>
+
+  <div class="krow k4">
+    <div class="kc r"><div class="kl">Urgent Fixes</div><div class="kv">2</div><div class="ks dn">Need attention immediately</div></div>
+    <div class="kc y"><div class="kl">High Impact Changes</div><div class="kv">3</div><div class="ks wn">Revenue opportunity</div></div>
+    <div class="kc s"><div class="kl">Strong Points</div><div class="kv">5</div><div class="ks up">Already working well</div></div>
+    <div class="kc"><div class="kl">Est. Revenue Impact</div><div class="kv">$690–$2,400</div><div class="ks">Per month if fixed</div></div>
+  </div>
+
+  <!-- URGENT FIXES -->
+  <div class="divider" style="color:var(--rust);">🚨 Fix These Immediately</div>
+
+  <div class="card" style="border-left:4px solid var(--rust);">
+    <div style="display:flex;gap:12px;align-items:flex-start;">
+      <div style="min-width:28px;height:28px;border-radius:50%;background:var(--rust);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+      <div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:3px;">Remove Demo/Placeholder Content</div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">The site has leftover Shopify theme demo content showing up — "Today's offers," "Wellness week," "Almond and banana 50% off," and countdown timers that have nothing to do with seed packets. This looks like a mistake to every visitor and immediately undermines trust in the brand. It needs to be deleted today.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--rust);margin-top:5px;">How to fix: Shopify Admin → Themes → Customize → find and delete the promotional banner section</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:4px solid var(--rust);">
+    <div style="display:flex;gap:12px;align-items:flex-start;">
+      <div style="min-width:28px;height:28px;border-radius:50%;background:var(--rust);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+      <div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:3px;">No Bulk Pricing Visible on Product Pages</div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">Every product on the site shows one flat price with no mention of volume discounts. A customer ordering 500 packets has no idea they'd pay $0.59/pkt instead of $1.55/pkt — that's a massive difference and it's completely invisible. The pricing page exists but is buried in the footer where nobody finds it. This is almost certainly costing her bulk orders every week.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--rust);margin-top:5px;">How to fix: Add "Order more, save more — see bulk pricing" callout on every product page linking to the pricing grid. Also add it to the homepage hero section.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HIGH IMPACT -->
+  <div class="divider" style="color:var(--gold);">🟡 High Impact — Do This Month</div>
+
+  <div class="card" style="border-left:4px solid var(--gold);">
+    <div style="display:flex;gap:12px;align-items:flex-start;">
+      <div style="min-width:28px;height:28px;border-radius:50%;background:var(--gold);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+      <div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:3px;">Make Corporate/Bulk Orders Easy to Find</div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">The "Business Promotions" collection exists but is buried in the Shop All dropdown — not featured anywhere on the homepage. Given that B2B orders like J.Jill are her highest-margin business, this should be front and center. A corporate buyer landing on the homepage right now has no clear path to placing a bulk order.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--gold);margin-top:5px;">How to fix: Add a "Corporate &amp; Bulk Orders" banner or section on the homepage. Create a dedicated landing page explaining the process, pricing, and how to get in touch for large orders.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:4px solid var(--gold);">
+    <div style="display:flex;gap:12px;align-items:flex-start;">
+      <div style="min-width:28px;height:28px;border-radius:50%;background:var(--gold);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
+      <div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:3px;">Fix the "New Arrivals" Collection</div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">The New Arrivals collection appears to contain her oldest products — California Poppy, Sunflower Bold. If that collection hasn't been maintained, it signals to visitors that the store isn't actively managed. New Arrivals should show her most recently added designs, not products from years ago.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--gold);margin-top:5px;">How to fix: Shopify Admin → Collections → New Arrivals → update to show only products added in the last 3–6 months. Add the Rabbit designs prominently since they're now her top sellers.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:4px solid var(--gold);">
+    <div style="display:flex;gap:12px;align-items:flex-start;">
+      <div style="min-width:28px;height:28px;border-radius:50%;background:var(--gold);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">5</div>
+      <div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:3px;">Make Blog Content Convert to Sales</div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">She has blog content ("How to grow wildflower seeds") which is good for SEO, but it doesn't connect back to her products or drive purchases. A post titled "The perfect seed packet favor for your baby shower" with product links and a discount code would turn readers into buyers. Her blog is an asset she's not fully using.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--gold);margin-top:5px;">How to fix: Write 2–3 event-specific blog posts (baby shower, wedding, Earth Day) with embedded product links. These also improve Google search rankings for those niches.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHAT'S WORKING -->
+  <div class="divider" style="color:var(--green);">✅ What's Already Working Well</div>
+  <div class="card">
+    <div class="ct">Keep These — Don't Change Them</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+      <div style="background:var(--bg);border-radius:8px;padding:.75rem;">
+        <div style="font-size:12px;font-weight:600;margin-bottom:3px;">📖 Origin story</div>
+        <div style="font-size:11.5px;color:var(--sm);line-height:1.5;">The grandfather story on the homepage is genuinely compelling and differentiates her from every faceless competitor. Keep it prominent.</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:.75rem;">
+        <div style="font-size:12px;font-weight:600;margin-bottom:3px;">⭐ Reviews (125, 96% 5-star)</div>
+        <div style="font-size:11.5px;color:var(--sm);line-height:1.5;">Strong social proof. Customers specifically mention personal service, fast shipping, and customization — keep these visible.</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:.75rem;">
+        <div style="font-size:12px;font-weight:600;margin-bottom:3px;">📂 Event-type collections</div>
+        <div style="font-size:11.5px;color:var(--sm);line-height:1.5;">Wedding, Memorial, Baby Shower, Earth Day — organized correctly. Just needs the New Arrivals fix and better homepage prominence.</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:.75rem;">
+        <div style="font-size:12px;font-weight:600;margin-bottom:3px;">📧 Email capture</div>
+        <div style="font-size:11.5px;color:var(--sm);line-height:1.5;">"Get 10% off your first order" popup is in place. Good foundation — now she needs to actually email that list via Mailchimp.</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:.75rem;">
+        <div style="font-size:12px;font-weight:600;margin-bottom:3px;">📝 Blog content exists</div>
+        <div style="font-size:11.5px;color:var(--sm);line-height:1.5;">Good SEO foundation. Just needs to be redirected toward conversion content rather than purely informational posts.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHOTO RECOMMENDATION -->
+  <div class="divider">📸 Photography — Highest ROI Single Investment</div>
+  <div class="card">
+    <div class="ct">Our Recommendation — Upgrade Product Photos</div>
+    <div style="font-size:12px;color:var(--sm);line-height:1.6;margin-bottom:10px;">On Etsy and Shopify, photos are your sales team. The current product photos are functional but lifestyle shots — packets on an actual wedding table, in a baby shower gift bag, at a memorial service — convert far better. This is a one-time investment that improves the ROI on every ad she runs, every Etsy listing, and every Shopify page indefinitely.</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;">
+      <div style="background:var(--bg);border-radius:8px;padding:.75rem;text-align:center;">
+        <div style="font-size:20px;margin-bottom:4px;">💍</div>
+        <div style="font-size:11px;font-weight:600;">Wedding table setup</div>
+        <div style="font-size:10.5px;color:var(--sl);">Packets as place settings or favors</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:.75rem;text-align:center;">
+        <div style="font-size:20px;margin-bottom:4px;">👶</div>
+        <div style="font-size:11px;font-weight:600;">Baby shower gift display</div>
+        <div style="font-size:10.5px;color:var(--sl);">Packets in a gift bag or on a table</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:.75rem;text-align:center;">
+        <div style="font-size:20px;margin-bottom:4px;">🌍</div>
+        <div style="font-size:11px;font-weight:600;">Corporate Earth Day setup</div>
+        <div style="font-size:10.5px;color:var(--sl);">Branded bulk order presentation</div>
+      </div>
+    </div>
+    <div class="ins g" style="margin-top:10px;"><span>📌</span><div><strong>Industry benchmark:</strong> Lifestyle photos typically improve e-commerce conversion 15–30%. At her current ad spend of $3,695/month, a 15% conversion lift could produce $400–1,200/month in additional revenue. One-time photographer cost: $200–600.</div></div>
+  </div>
+
+</div><!-- end website -->
+
+<!-- ═══ GROWTH PRIORITIES ═══ -->
+<div class="pg" id="pg-growth">
+  <div class="pg-title">Growth Priorities</div>
+  <div class="pg-sub">Every opportunity ranked by business impact — biggest ROI first</div>
+
+  <div class="ins g" style="margin-bottom:1rem;"><span>💡</span><div>These are ordered by how much they can move the needle on your revenue, margin, or long-term business value. The top items require little to no extra cost — they're mostly about decisions, not spending.</div></div>
+
+  <!-- ITEM 1 -->
+  <div class="card" style="border-left:4px solid var(--rust);">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="min-width:32px;height:32px;border-radius:50%;background:var(--rust);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:700;">Raise Prices Across All Tiers</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag r">Urgent</span><span class="tag g">Zero Cost</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">You're 20–38% below market on your most common order sizes. You raised prices in 2024 with no customer pushback. Every dollar increase goes 94 cents straight to your profit — your costs don't change. This is the highest-ROI move available to you right now.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--rust);margin-top:5px;">💰 Est. impact: +$1,437–$3,193/month in additional net income</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM 2 -->
+  <div class="card" style="border-left:4px solid var(--rust);">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="min-width:32px;height:32px;border-radius:50%;background:var(--rust);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:700;">Audit and Cut Underperforming Ad Spend</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag r">High</span><span class="tag y">Low Effort</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">You're spending $3,695/month on ads with no confirmed return on most of it. Pull your Etsy and Google ad conversion reports. If specific campaigns aren't producing orders, cut or pause them. This frees up cash that can be reinvested — or just kept.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--rust);margin-top:5px;">💰 Est. impact: $740–$1,110/month saved · that's $8,900–$13,300/year if 20–30% of spend is non-converting</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM 3 -->
+  <div class="card" style="border-left:4px solid var(--rust);">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="min-width:32px;height:32px;border-radius:50%;background:var(--rust);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:700;">Replace QuickBooks with Wave (Free)</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag r">High</span><span class="tag g">Zero Cost</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">Wave Accounting is free and handles everything you need — invoicing, profit &amp; loss, expense tracking. QuickBooks costs you $265+/month when you factor in QB Payments fees. Discuss the switch with your bookkeeper and transition when the timing works.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--rust);margin-top:5px;">💰 Est. impact: $274/month saved ($38 QB subscription + $227 QB Payments + $8.66 Microsoft) · $3,285/year — note QB Payments fees vary with sales volume</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM 4 -->
+  <div class="card" style="border-left:4px solid var(--gold);">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="min-width:32px;height:32px;border-radius:50%;background:var(--gold);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:700;">Actively Grow Shopify Sales</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag y">High</span><span class="tag g">Low Cost</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">Shopify's effective fee rate is 3.7% vs. Etsy's 35.1% — a 31-point difference. Every dollar you move from Etsy to Shopify saves nearly a third of that sale in fees. Add a note to your packaging inserts pointing repeat buyers to your Shopify URL. Point Google ads to Shopify instead of Etsy. Build a small incentive — like free shipping at 50+ packets — exclusive to your direct store.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--gold);margin-top:5px;">📈 Est. impact: If 20% of Etsy sales shift, save ~$725/month in fees · 40% shift saves ~$1,450/month · $8,700–$17,400/year at scale</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM 5 -->
+  <div class="card" style="border-left:4px solid var(--gold);">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="min-width:32px;height:32px;border-radius:50%;background:var(--gold);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">5</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:700;">Start Using Mailchimp to Email Past Customers</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag y">High</span><span class="tag g">Free</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">You already have Mailchimp for free and aren't using it. Your past customers already love your packets — they're your warmest, cheapest audience. A simple email before peak season (January/February) with new designs and a direct Shopify link drives reorders at no ad cost. Set up a basic repeat-buyer sequence and let it run on its own.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--gold);margin-top:5px;">📈 Est. impact: <span style="background:var(--goldp);padding:1px 6px;border-radius:4px;">? — depends on email list size and past customer data not yet confirmed</span> · Opportunity is real but needs her Mailchimp subscriber count and open rate data first</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM 6 -->
+  <div class="card" style="border-left:4px solid var(--gold);">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="min-width:32px;height:32px;border-radius:50%;background:var(--gold);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">6</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:700;">Pursue Corporate &amp; Bulk B2B Orders</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag y">High</span><span class="tag y">Some Effort</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">The J.Jill order was $14,550 in a single transaction with no Etsy fees and no ad spend. That's your highest-margin business model. Reach out on LinkedIn to HR managers and marketing teams at local and regional companies — Earth Day promotions, employee gifting, and brand events are all natural fits. One or two of these per season changes your income picture significantly.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--gold);margin-top:5px;">📈 Est. impact: 2–4 corporate orders/year at $5,000–$15,000 each = $10,000–$60,000/year in high-margin revenue with no Etsy fees. Even at the conservative end, one $8,000 order per quarter adds $32,000/year — more than doubling your current net income</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM 7 -->
+  <div class="card" style="border-left:4px solid var(--gold);">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="min-width:32px;height:32px;border-radius:50%;background:var(--gold);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">7</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:700;">Push Average Order Value Toward 50 Packets</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag y">Medium</span><span class="tag g">Low Cost</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">Shipping 50 packets costs you nearly the same as shipping 20. Most orders come in at 30–40. Adding a small surcharge for orders under 50, or offering free shipping at 50+, naturally moves customers to your sweet spot — more revenue per shipment, same effort. Your average order value has dropped 36% since 2022 and this directly addresses it.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--gold);margin-top:5px;">💰 Est. impact: <span style="background:var(--goldp);padding:1px 6px;border-radius:4px;">? — depends on what % of customers actually move up to 50 packets, which we don't know yet</span> · Direction is right, exact number needs to be tested</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM 8 -->
+  <div class="card" style="border-left:4px solid var(--gold);">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="min-width:32px;height:32px;border-radius:50%;background:var(--gold);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">8</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:700;">Update Inventory &amp; Ads to Reflect 2025 Top Sellers</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag y">Medium</span><span class="tag g">Low Cost</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">Peter Rabbit Blue &amp; Pink became your #1 sellers in 2025 — overtaking Bee Friendly which had led for years. If your ad spend and inventory stocking haven't been updated to match where demand actually is, you're likely over-investing in slower products. Shift accordingly and you'll get better ROI from the same ad budget.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--gold);margin-top:5px;">📈 Est. impact: <span style="background:var(--goldp);padding:1px 6px;border-radius:4px;">? — can't calculate until ad conversion data is pulled</span> · Once you know which campaigns are converting, the reallocation impact becomes clear</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM 9 -->
+  <div class="card" style="border-left:4px solid var(--gold);">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="min-width:32px;height:32px;border-radius:50%;background:var(--gold);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">9</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:700;">Follow Up With J.Jill — Build a Recurring Relationship</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag y">Medium</span><span class="tag g">Zero Cost</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">A single email or call to your J.Jill contact asking whether they'd like to set up a recurring seasonal order costs you nothing. If they say yes, you've just created predictable, high-margin revenue with no ad spend. Corporate clients who've already bought are your most likely repeat buyers — and they're easier to retain than acquire.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--gold);margin-top:5px;">📈 Est. impact: J.Jill was $14,550 in one order. If they repeat twice a year at even half that size, that's $14,550/year in no-fee revenue — equivalent to adding ~3 months of current net profit with a single email</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM 10 -->
+  <div class="card" style="border-left:4px solid var(--green);">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="min-width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">10</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:700;">Upgrade Product Photography</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag g">Medium</span><span class="tag y">One-Time Cost</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">On Etsy and Shopify, photos are your sales team. Better photos directly increase conversion rates — meaning more sales from the same traffic you're already paying for. Lifestyle shots showing packets at actual weddings, baby showers, and memorial tables are far more compelling than product-only shots. This is a one-time investment that pays dividends on every listing indefinitely.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-top:5px;">📈 Est. impact: <span style="background:var(--sage);padding:1px 6px;border-radius:4px;">Industry benchmark — not Afton's specific data</span> · Lifestyle photos typically improve e-commerce conversion 15–30%. On $3,695/mo ad spend, a 15% lift = ~$400–1,200/mo more orders from the same budget. One-time photographer cost: $200–600</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM 11 -->
+  <div class="card" style="border-left:4px solid var(--green);">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="min-width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">11</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:700;">Optimize Pinterest</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag g">Medium</span><span class="tag g">Free</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">Pinterest is one of the strongest platforms for event favors and wedding products — people actively plan events there. It didn't work before, but likely because it wasn't set up correctly. Pin directly to product pages (not your homepage), use keyword-rich descriptions like "wildflower seed packet wedding favors," and organize boards by event type: Weddings, Baby Showers, Memorials, Earth Day. Consistent pinning compounds over time.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-top:5px;">📈 Est. impact: <span style="background:var(--sage);padding:1px 6px;border-radius:4px;">Industry benchmark — not Afton's specific data</span> · Typical range for a niche e-commerce store: 50–200 visitors/month within 6–12 months. At $60 avg order and 3–5% conversion = $90–600/month in incremental Shopify revenue at zero ongoing cost</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM 12 -->
+  <div class="card" style="border-left:4px solid var(--green);">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="min-width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">12</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:700;">Market Kraft Paper as a Premium Sustainable Option</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag g">Medium</span><span class="tag g">Zero Cost</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">Eco-conscious buyers are a growing market and actively seek out sustainable options. Right now kraft paper is a quiet $0.03 add-on. Consider raising it slightly to $0.05 and positioning it more prominently as your "eco-friendly" option in listings and on your website. Buyers who care about sustainability often have higher willingness to pay overall.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-top:5px;">📈 Est. impact: If 10–20% of your ~190 monthly orders use kraft paper at 50 packets avg, raising the upcharge from $0.03 to $0.05 adds $19–38/month directly. The bigger win is positioning — eco buyers tend to order more and pay more across the board</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM 13 -->
+  <div class="card" style="border-left:4px solid var(--green);">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="min-width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">13</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:700;">Offer Upsells — Two-Sided Printing &amp; Add-Ons</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag g">Medium</span><span class="tag g">Zero Cost</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">Two-sided printing is currently a $0.20 add-on. Most customers order one-sided — which means there's a large pool of buyers who haven't been actively nudged toward the upgrade. Highlight two-sided printing more prominently in listings as the premium, personalized option. Even converting 15% of one-sided buyers to two-sided meaningfully raises your revenue per order with zero extra effort.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-top:5px;">💰 Est. impact: <span style="background:var(--sage);padding:1px 6px;border-radius:4px;">Industry benchmark</span> · We don't know what % of Afton's orders currently choose two-sided. Once she confirms that split, this estimate becomes precise. Direction is clear — promoting it more will move the number up.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM 14 -->
+  <div class="card" style="border-left:4px solid var(--green);">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="min-width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">14</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:700;">Add Dedicated Niche Landing Pages to Your Website</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag g">Lower</span><span class="tag y">Some Effort</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">You already dominate specific event niches — weddings, baby showers, memorials, Earth Day. Creating dedicated Shopify collections or landing pages for each one helps with Google search visibility and converts better because visitors see exactly what they're looking for. "Wildflower seed packets for baby showers" is a search term people use — you should be ranking for it.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-top:5px;">📈 Est. impact: <span style="background:var(--sage);padding:1px 6px;border-radius:4px;">Industry benchmark — not Afton's specific data</span> · Free to build on Shopify. Organic search typically builds over 3–6 months. Industry range: $200–600/month in search-driven orders once ranking establishes.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM 15 -->
+  <div class="card" style="border-left:4px solid var(--green);">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="min-width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">15</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:700;">Add Strategic New Designs — Seasonals &amp; Customizable Templates</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag g">Lower</span><span class="tag y">Some Effort</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">You're right to be selective about new designs — too many splits focus. But two specific types are worth adding: seasonal limited editions (Valentine's Day, Mother's Day, graduation) that create urgency and drive repeat visits, and a customizable blank template where the buyer adds their own name and date. Customizable listings have higher perceived value and attract buyers who can't find what they need elsewhere.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-top:5px;">📈 Est. impact: <span style="background:var(--sage);padding:1px 6px;border-radius:4px;">Industry benchmark — not Afton's specific data</span> · Seasonal designs and custom templates typically command 20–30% premium. Exact impact depends on designs added and how they're marketed.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM 16 -->
+  <div class="card" style="border-left:4px solid var(--green);">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="min-width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">16</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:700;">Explore Wholesale to Retailers</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag g">Long-Term</span><span class="tag y">More Effort</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">You already buy from wholesale vendors — you could also sell wholesale to retailers. Local gift shops, garden centers, florists, and boutique event supply stores are all potential stockists for your most popular designs. Wholesale means lower margins per packet but larger, predictable, recurring orders that don't require ad spend or Etsy fees. A good fit for your slowest months when retail drops off.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-top:5px;">📈 Est. impact: <span style="background:var(--goldp);padding:1px 6px;border-radius:4px;">? — no retail relationships confirmed yet</span> · Numbers depend entirely on how many accounts she lands and at what volume. Can't estimate accurately until she starts outreach.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM 17 -->
+  <div class="card" style="border-left:4px solid var(--green);">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="min-width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">17</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:700;">Target Wedding Planners and Event Coordinators Directly</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag g">Long-Term</span><span class="tag y">Some Effort</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--sm);line-height:1.6;">Wedding orders have dropped off but the market hasn't gone away — it may just need a different approach. Wedding planners and event coordinators buy in bulk for multiple clients and become repeat buyers if you treat them well. A referral discount (e.g. 10% off for planners who send three or more clients) turns one relationship into a recurring pipeline. Consider reaching out to local planners directly or listing on The Knot and similar platforms.</div>
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-top:5px;">📈 Est. impact: <span style="background:var(--goldp);padding:1px 6px;border-radius:4px;">? — no planner relationships exist yet</span> · Potential is real based on her historical wedding order data, but can't be quantified until outreach begins and response rates are known.</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end growth -->
+
+<!-- ═══ ACTION PLAN ═══ -->
+<div class="pg" id="pg-plan">
+  <div class="pg-title">Action Plan</div>
+  <div class="pg-sub">Every action from Growth Priorities, organized by when to do it — numbers match exactly</div>
+
+  <div class="krow k3">
+    <div class="kc s"><div class="kl">Pricing Opportunity</div><div class="kv">+$3,193/mo</div><div class="ks up">After platform fees · margin → 28%</div></div>
+    <div class="kc y"><div class="kl">Confirmed Cost Savings</div><div class="kv">$274/mo</div><div class="ks up">QB + Microsoft — certain cuts</div></div>
+    <div class="kc"><div class="kl">Additional Savings Potential</div><div class="kv">? — TBD</div><div class="ks wn">Ad ROI + mystery software unknown</div></div>
+  </div>
+
+  <!-- 30/60/90 ROADMAP -->
+  <div class="plan-grid">
+    <div class="plan-card p30">
+      <div class="plan-title">✅ First 30 Days — Urgent</div>
+      <div class="plan-item"><span style="font-weight:700;color:var(--rust);min-width:18px;">#1</span><div>Raise prices across all tiers — fix 5K+ first ($0.33 → $0.38)</div></div>
+      <div class="plan-item"><span style="font-weight:700;color:var(--rust);min-width:18px;">#1</span><div>Raise Etsy 50-pack listing ($1.15 → $1.35)</div></div>
+      <div class="plan-item"><span style="font-weight:700;color:var(--rust);min-width:18px;">#2</span><div>Pull Etsy + Google ad conversion data</div></div>
+      <div class="plan-item"><span style="font-weight:700;color:var(--rust);min-width:18px;">#3</span><div>Start QuickBooks → Wave transition with bookkeeper</div></div>
+      <div class="plan-item"><span style="font-weight:700;color:var(--rust);min-width:18px;">#3</span><div>Investigate &amp; cancel Microsoft charge ($8.66/mo)</div></div>
+    </div>
+    <div class="plan-card p60">
+      <div class="plan-title">🔄 Days 31–60 — Build Momentum</div>
+      <div class="plan-item"><span style="font-weight:700;color:var(--gold);min-width:18px;">#2</span><div>Reduce low-ROI ad spend by 30%, monitor for 2 weeks</div></div>
+      <div class="plan-item"><span style="font-weight:700;color:var(--gold);min-width:18px;">#4</span><div>Add Shopify direct-order incentive to packaging inserts</div></div>
+      <div class="plan-item"><span style="font-weight:700;color:var(--gold);min-width:18px;">#5</span><div>Send first Mailchimp email to past customers</div></div>
+      <div class="plan-item"><span style="font-weight:700;color:var(--gold);min-width:18px;">#7</span><div>Test shipping incentive for orders under 50 packets</div></div>
+      <div class="plan-item"><span style="font-weight:700;color:var(--gold);min-width:18px;">#8</span><div>Shift inventory + ads toward Rabbit designs (2025 #1)</div></div>
+    </div>
+    <div class="plan-card p90">
+      <div class="plan-title">🚀 Days 61–90 — Bigger Moves</div>
+      <div class="plan-item"><span style="font-weight:700;color:var(--rust);min-width:18px;">#6</span><div>Build Earth Day corporate pitch — LinkedIn to HR teams</div></div>
+      <div class="plan-item"><span style="font-weight:700;color:var(--gold);min-width:18px;">#9</span><div>Follow up with J.Jill — explore recurring relationship</div></div>
+      <div class="plan-item"><span style="font-weight:700;color:var(--green);min-width:18px;">#5</span><div>Set up Mailchimp repeat-buyer sequence</div></div>
+      <div class="plan-item"><span style="font-weight:700;color:var(--green);min-width:18px;">#10</span><div>Book photographer for lifestyle product shots</div></div>
+      <div class="plan-item"><span style="font-weight:700;color:var(--green);min-width:18px;">#11</span><div>Set up Pinterest boards by event type with keyword descriptions</div></div>
+    </div>
+  </div>
+
+  <!-- URGENT — items 1–3 -->
+  <div class="card">
+    <div class="ct" style="color:var(--rust);">🔴 Urgent — Do These First (Growth Priorities #1–3)</div>
+
+    <div class="ai">
+      <div class="anum" style="background:var(--rust);">1</div>
+      <div>
+        <div class="atitle">Raise Prices Across All Tiers</div>
+        <div class="adesc">Start with the two easiest: fix the 5K+ tier ($0.33 → $0.38) and raise your Etsy 50-pack listing ($1.15 → $1.35). Then roll out the full grid across Etsy and Shopify. You raised prices in 2024 with no pushback — the market supports it and your costs don't change.</div>
+        <div class="aimp up">💰 +$1,437–$3,193/month · 94¢ of every dollar goes straight to net income</div>
+      </div>
+    </div>
+
+    <div class="ai">
+      <div class="anum" style="background:var(--rust);">2</div>
+      <div>
+        <div class="atitle">Audit and Cut Underperforming Ad Spend</div>
+        <div class="adesc">Pull your Etsy and Google ad conversion reports. Find which campaigns are producing orders and which aren't. Reduce non-converting spend by 30% and watch order volume for two weeks before cutting further. $3,695/month with no confirmed ROI is a significant risk.</div>
+        <div class="aimp up">✂️ $500–$1,000/month saved if spend isn't converting</div>
+      </div>
+    </div>
+
+    <div class="ai">
+      <div class="anum" style="background:var(--rust);">3</div>
+      <div>
+        <div class="atitle">Replace QuickBooks with Wave + Cancel Microsoft Charge</div>
+        <div class="adesc">Wave Accounting is free and handles everything you need. Discuss the switch with your bookkeeper and transition when timing works. Separately, check your bank statement to identify the $8.66 Microsoft charge — cancel it if unused.</div>
+        <div class="aimp up">✂️ Save $265+/month on QB · $104/year on Microsoft</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HIGH IMPACT — items 4–9 -->
+  <div class="card">
+    <div class="ct" style="color:var(--gold);">🟡 High Impact — Do This Month (Growth Priorities #4–9)</div>
+
+    <div class="ai">
+      <div class="anum" style="background:var(--gold);">4</div>
+      <div>
+        <div class="atitle">Actively Grow Shopify Sales</div>
+        <div class="adesc">Add a note to your packaging inserts pointing repeat buyers to your Shopify URL. Point Google ads to Shopify instead of Etsy. Every order shifted there saves 6–10% in fees and builds a customer relationship you own.</div>
+        <div class="aimp wn">📈 6–10% better margin per sale shifted · compounds over time</div>
+      </div>
+    </div>
+
+    <div class="ai">
+      <div class="anum" style="background:var(--gold);">5</div>
+      <div>
+        <div class="atitle">Start Using Mailchimp — Email Past Customers</div>
+        <div class="adesc">Send a simple email to past buyers before fall season with new designs and a direct Shopify link. Then set up a basic repeat-buyer sequence so it runs automatically. Free, warm, and drives your highest-margin channel.</div>
+        <div class="aimp wn">💰 Free recurring revenue from customers who already love your product</div>
+      </div>
+    </div>
+
+    <div class="ai">
+      <div class="anum" style="background:var(--gold);">6</div>
+      <div>
+        <div class="atitle">Pursue Corporate &amp; Bulk B2B Orders</div>
+        <div class="adesc">Reach out on LinkedIn to HR managers and marketing teams at local companies for Earth Day promotions, employee gifting, and brand events. The J.Jill order showed what one conversation can turn into. Build a simple one-page PDF with your designs and pricing to send as a corporate lookbook.</div>
+        <div class="aimp wn">📈 $5,000–$20,000+ per order · no platform fees</div>
+      </div>
+    </div>
+
+    <div class="ai">
+      <div class="anum" style="background:var(--gold);">7</div>
+      <div>
+        <div class="atitle">Push Average Orders Toward 50 Packets</div>
+        <div class="adesc">Shipping 50 packets costs nearly the same as shipping 20. Add a small surcharge below 50 packets, or offer free shipping at 50+. This moves customers to your sweet spot — more revenue per shipment with the same effort on your end.</div>
+        <div class="aimp wn">💰 +$15–25 per order that moves up to 50 packets</div>
+      </div>
+    </div>
+
+    <div class="ai">
+      <div class="anum" style="background:var(--gold);">8</div>
+      <div>
+        <div class="atitle">Update Inventory &amp; Ads to Match 2025 Top Sellers</div>
+        <div class="adesc">Peter Rabbit Blue &amp; Pink became your #1 sellers in 2025, overtaking Bee Friendly. If your ad spend and inventory haven't shifted to match, you're leaving money on the table. Reallocate toward what's actually selling now.</div>
+        <div class="aimp wn">📈 Better ad ROI · less wasted inventory · same budget works harder</div>
+      </div>
+    </div>
+
+    <div class="ai">
+      <div class="anum" style="background:var(--gold);">9</div>
+      <div>
+        <div class="atitle">Follow Up With J.Jill — Explore a Recurring Relationship</div>
+        <div class="adesc">One email or call to your J.Jill contact asking whether they'd like a recurring seasonal order costs you nothing. If they say yes, you've created predictable high-margin revenue with no ad spend. Corporate clients who've already bought are your most likely repeat buyers.</div>
+        <div class="aimp wn">📈 Potentially $10,000–$20,000/year in recurring B2B revenue</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LONGER TERM — items 10–17 -->
+  <div class="card">
+    <div class="ct" style="color:var(--green);">🟢 Strategic — Next 2–4 Months (Growth Priorities #10–17)</div>
+
+    <div class="ai">
+      <div class="anum">10</div>
+      <div>
+        <div class="atitle">Upgrade Product Photography</div>
+        <div class="adesc">Lifestyle shots showing your packets at real weddings, baby showers, and memorial tables convert far better than product-only photos. This is a one-time investment that pays dividends on every listing indefinitely — and improves ROI on all your existing ad spend.</div>
+        <div class="aimp up">📈 Higher conversion rate on existing traffic — more orders, same ad spend</div>
+      </div>
+    </div>
+
+    <div class="ai">
+      <div class="anum">11</div>
+      <div>
+        <div class="atitle">Optimize Pinterest</div>
+        <div class="adesc">Pin directly to product pages — not your homepage. Use keyword-rich descriptions ("wildflower seed packet wedding favors," "baby shower seed packets bulk"). Create boards by event type: Weddings, Baby Showers, Memorials, Earth Day. Consistent pinning compounds over time.</div>
+        <div class="aimp up">📈 Free organic traffic from buyers actively planning events</div>
+      </div>
+    </div>
+
+    <div class="ai">
+      <div class="anum">12</div>
+      <div>
+        <div class="atitle">Market Kraft Paper as a Premium Eco Option</div>
+        <div class="adesc">Raise the kraft upcharge from $0.03 to $0.05 and position it prominently as your sustainable option in listings and on your website. Eco-conscious buyers often have higher willingness to pay and respond to clear messaging.</div>
+        <div class="aimp up">💰 Higher per-packet revenue on eco orders + attracts premium buyers</div>
+      </div>
+    </div>
+
+    <div class="ai">
+      <div class="anum">13</div>
+      <div>
+        <div class="atitle">Promote Two-Sided Printing More Actively</div>
+        <div class="adesc">Two-sided is currently a quiet $0.20 add-on. Most customers choose one-sided — meaning there's a large pool of buyers who haven't been nudged toward the upgrade. Feature it more prominently in your listings as the premium, personalized option.</div>
+        <div class="aimp up">💰 +$0.20/pkt on orders that upgrade · zero extra production work</div>
+      </div>
+    </div>
+
+    <div class="ai">
+      <div class="anum">14</div>
+      <div>
+        <div class="atitle">Add Niche Landing Pages to Your Shopify Store</div>
+        <div class="adesc">Create dedicated collections or pages for Weddings, Baby Showers, Memorials, and Earth Day. People search Google for "wildflower seed packets for baby showers" — you should be showing up. Niche pages also convert better because visitors land exactly where they want to be.</div>
+        <div class="aimp up">📈 Improved organic search visibility · higher conversion rate per niche</div>
+      </div>
+    </div>
+
+    <div class="ai">
+      <div class="anum">15</div>
+      <div>
+        <div class="atitle">Add Seasonal Designs &amp; Customizable Templates</div>
+        <div class="adesc">Limited edition seasonal designs (Valentine's, Mother's Day, graduation) create urgency and drive repeat visits. A customizable blank template where buyers add their own name and date commands higher perceived value and attracts customers who can't find exactly what they need elsewhere.</div>
+        <div class="aimp up">📈 New seasonal demand · premium pricing on custom options</div>
+      </div>
+    </div>
+
+    <div class="ai">
+      <div class="anum">16</div>
+      <div>
+        <div class="atitle">Explore Wholesale to Retailers</div>
+        <div class="adesc">Gift shops, garden centers, florists, and boutique event supply stores could stock your most popular designs. Wholesale means lower per-packet margins but larger, predictable, recurring orders with no ad spend or Etsy fees — ideal for filling in your slower months.</div>
+        <div class="aimp up">📈 Predictable recurring revenue · off-season income stability</div>
+      </div>
+    </div>
+
+    <div class="ai">
+      <div class="anum">17</div>
+      <div>
+        <div class="atitle">Target Wedding Planners &amp; Event Coordinators</div>
+        <div class="adesc">Wedding orders have dropped, but the market hasn't gone away. Planners buy in bulk for multiple clients and become repeat buyers. A referral discount (10% off after three client orders) turns one relationship into a recurring pipeline. Reach out locally or list on The Knot and similar platforms.</div>
+        <div class="aimp up">📈 High-volume repeat buyers who refer others · revives wedding channel</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ MONTHLY TRACKER ═══ -->
+<div class="pg" id="pg-tracker">
+  <div class="pg-title">Monthly KPI Tracker</div>
+  <div class="pg-sub">Enter your numbers each month — your metrics update automatically</div>
+
+  <div class="ins g" style="margin-bottom:1rem;"><span>💡</span><div>Fill in your Etsy revenue, Shopify revenue, services income, COGS, and operating expenses each month. Everything else calculates on its own. Your April 2026 numbers are pre-loaded as the baseline.</div></div>
+
+  <!-- INPUT FORM -->
+  <div class="card">
+    <div class="ct">📥 Enter This Month's Numbers</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem;">
+
+      <div>
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--sl);margin-bottom:5px;">Month / Year</div>
+        <input id="t-month" type="month" value="2026-04" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-family:&#39;DM Sans&#39;,sans-serif;font-size:13px;background:var(--bg);color:var(--slate);outline:none;">
+      </div>
+
+      <div>
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--sl);margin-bottom:5px;">Etsy Sales ($)</div>
+        <input id="t-etsy" type="number" value="11526" placeholder="0" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-family:&#39;DM Sans&#39;,sans-serif;font-size:13px;background:var(--bg);color:var(--slate);outline:none;">
+      </div>
+
+      <div>
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--sl);margin-bottom:5px;">Shopify Sales ($)</div>
+        <input id="t-shopify" type="number" value="5461" placeholder="0" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-family:&#39;DM Sans&#39;,sans-serif;font-size:13px;background:var(--bg);color:var(--slate);outline:none;">
+      </div>
+
+      <div>
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--sl);margin-bottom:5px;">Services / Custom Orders ($)</div>
+        <input id="t-services" type="number" value="7275" placeholder="0" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-family:&#39;DM Sans&#39;,sans-serif;font-size:13px;background:var(--bg);color:var(--slate);outline:none;">
+      </div>
+
+      <div>
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--sl);margin-bottom:5px;">Cost of Goods Sold ($)</div>
+        <input id="t-cogs" type="number" value="10544" placeholder="0" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-family:&#39;DM Sans&#39;,sans-serif;font-size:13px;background:var(--bg);color:var(--slate);outline:none;">
+      </div>
+
+      <div>
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--sl);margin-bottom:5px;">Operating Expenses ($)</div>
+        <input id="t-opex" type="number" value="9512" placeholder="0" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-family:&#39;DM Sans&#39;,sans-serif;font-size:13px;background:var(--bg);color:var(--slate);outline:none;">
+      </div>
+
+      <div>
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--sl);margin-bottom:5px;">Number of Orders</div>
+        <input id="t-orders" type="number" value="190" placeholder="0" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-family:&#39;DM Sans&#39;,sans-serif;font-size:13px;background:var(--bg);color:var(--slate);outline:none;">
+      </div>
+
+      <div>
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--sl);margin-bottom:5px;">Ad Spend ($)</div>
+        <input id="t-ads" type="number" value="3695" placeholder="0" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-family:&#39;DM Sans&#39;,sans-serif;font-size:13px;background:var(--bg);color:var(--slate);outline:none;">
+      </div>
+
+      <div style="display:flex;align-items:flex-end;">
+        <button onclick="calcKPIs()" style="width:100%;padding:9px;background:var(--green);color:#fff;border:none;border-radius:7px;font-family:&#39;DM Sans&#39;,sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s;" onmouseover="this.style.opacity=&#39;.85&#39;" onmouseout="this.style.opacity=&#39;1&#39;">Calculate ↗</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CALCULATED KPI OUTPUT -->
+  <div class="divider">📊 Calculated Metrics</div>
+  <div class="krow k4">
+    <div class="kc s"><div class="kl">Total Revenue</div><div class="kv" id="o-rev">$24,262</div><div class="ks" id="o-rev-s">Etsy + Shopify + Services</div></div>
+    <div class="kc s"><div class="kl">Gross Profit</div><div class="kv" id="o-gp">$13,718</div><div class="ks up" id="o-gm">56.5% gross margin</div></div>
+    <div class="kc y"><div class="kl">Net Profit</div><div class="kv" id="o-np">$4,206</div><div class="ks wn" id="o-nm">17.3% net margin</div></div>
+    <div class="kc r"><div class="kl">Total Expenses</div><div class="kv" id="o-exp">$20,056</div><div class="ks dn" id="o-exp-s">COGS + Operating</div></div>
+  </div>
+  <div class="krow k4">
+    <div class="kc"><div class="kl">Avg Order Value</div><div class="kv" id="o-aov">$89.41</div><div class="ks up" id="o-aov-s">✓ Above target</div></div>
+    <div class="kc y"><div class="kl">Shopify % of Channel</div><div class="kv" id="o-shp">32.1%</div><div class="ks dn" id="o-shp-s">Goal: grow toward 55–65%</div></div>
+    <div class="kc r"><div class="kl">Ad Spend % of Revenue</div><div class="kv" id="o-adp">15.2%</div><div class="ks dn" id="o-adp-s">Target: under 10% of revenue</div></div>
+    <div class="kc"><div class="kl">Revenue per Order</div><div class="kv" id="o-rpo">$89.41</div><div class="ks" id="o-rpo-s">Channel orders only</div></div>
+  </div>
+
+  <!-- HEALTH SIGNALS -->
+  <div class="card" style="margin-bottom:.85rem;">
+    <div class="ct">🩺 Month Health Check</div>
+    <div id="o-health" style="display:flex;flex-direction:column;gap:6px;"><div class="ins g"><span>✅</span><div>Gross margin is 56.5% — healthy. Your product costs are well controlled.</div></div><div class="ins y"><span>⚠️</span><div>Net margin is 17.3%. Your target is 28–30%. Price increases and cost cuts will close this gap.</div></div><div class="ins r"><span>🚨</span><div>Ad spend is 15.2% of revenue — higher than ideal. Review Etsy and Google ad ROI this month.</div></div><div class="ins r"><span>🚨</span><div>Shopify is only 32.1% of channel revenue. Heavy Etsy dependence means high fee burden.</div></div><div class="ins g"><span>✅</span><div>Average order value is $89 — above the $80 target. Great work.</div></div></div>
+  </div>
+
+  <!-- HISTORY TABLE -->
+  <div class="card">
+    <div class="ct">📅 Monthly History <span style="font-size:10px;font-weight:400;color:var(--sl);margin-left:6px;">— entries saved in your browser, cleared if you clear browser data</span></div>
+    <div style="overflow-x:auto;">
+      <table class="dt" id="t-history">
+        <thead><tr><th>Month</th><th>Revenue</th><th>Gross Profit</th><th>Net Profit</th><th>Net Margin</th><th>AOV</th><th>Shopify %</th><th>Ad %</th><th></th></tr></thead>
+        <tbody id="t-history-body"><tr style="background:var(--sage);">
+    <td><strong>Apr 2026</strong> <span class="tag g">Baseline</span></td>
+    <td>$24,692</td><td>$14,148</td><td>$4,636</td>
+    <td class="wn">18.8%</td><td>$59.36</td><td>32.2%</td><td class="dn">15.0%</td>
+    <td style="font-size:10px;color:var(--sl);">Pre-loaded</td></tr></tbody>
+      </table>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px;">
+      <button onclick="saveEntry()" style="padding:7px 14px;background:var(--green);color:#fff;border:none;border-radius:7px;font-family:&#39;DM Sans&#39;,sans-serif;font-size:12px;font-weight:600;cursor:pointer;">Save This Month</button>
+      <button onclick="clearHistory()" style="padding:7px 14px;background:var(--bg2);color:var(--sm);border:1px solid var(--border);border-radius:7px;font-family:&#39;DM Sans&#39;,sans-serif;font-size:12px;cursor:pointer;">Clear History</button>
+    </div>
+  </div>
+
+  <!-- BENCHMARK TARGETS -->
+  <div class="card">
+    <div class="ct">🎯 Your Target Benchmarks — What Good Looks Like</div>
+    <div class="ins b" style="margin-bottom:.7rem;"><span>📌</span><div>April 2026 figures are confirmed from your P&amp;L. Target figures are based on what's achievable with the recommended changes. Cost savings targets marked with ? depend on data we still need from you.</div></div>
+    <table class="dt">
+      <thead><tr><th>Metric</th><th>Your April 2026</th><th>Target</th><th>Confirmed?</th><th>How to Get There</th></tr></thead>
+      <tbody>
+        <tr><td>Net Margin</td><td class="wn">18.8%</td><td class="up">28–30%</td><td><span class="tag g">Calculated</span></td><td>Price increases (confirmed from your data)</td></tr>
+        <tr><td>Avg Order Value</td><td class="dn">$59</td><td class="up">$80–90</td><td><span class="tag g">Calculated</span></td><td>Price increases + 50-packet minimum incentive</td></tr>
+        <tr><td>Shopify % of Channel</td><td class="wn">32.2%</td><td class="up">55–65%</td><td><span class="tag g">Confirmed</span></td><td>Packaging inserts + Mailchimp + Google ads to Shopify</td></tr>
+        <tr><td>Ad Spend % of Revenue</td><td class="dn">15.0%</td><td class="up">&lt;10%</td><td><span class="tag y">? pending</span></td><td>Need conversion data before knowing how much to cut</td></tr>
+        <tr><td>Gross Margin</td><td class="up">57.3%</td><td class="up">55–60%</td><td><span class="tag g">Confirmed</span></td><td>Already healthy — maintain wholesale relationships</td></tr>
+        <tr><td>Monthly Net Profit</td><td class="wn">$4,636</td><td class="up">$7,800+</td><td><span class="tag y">Partial</span></td><td>Price increases ($3,193 confirmed) + cost savings (? pending ad audit)</td></tr>
+        <tr><td>Monthly Break-Even</td><td class="wn">Unknown</td><td>—</td><td><span class="tag r">? needed</span></td><td>Need Jan or Feb P&amp;L to calculate accurately</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- end tracker -->
+
+</div>
+<div class="footer">Prepared by <strong>Cascade Strategy LLC</strong> &nbsp;·&nbsp; Bloom Street Packets &nbsp;·&nbsp; May 2026 &nbsp;·&nbsp; Confidential</div>
+
+<script>
+function go(id, btn) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('pg-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+const G='#2d6a4f',GL='#40916c',S='#b7e4c7',R='#bc4749',GD='#c9a84c',GR='#e2d9cc';
+
+function donut(id, labels, data, colors) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  new Chart(el, {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#fff' }] },
+    options: { responsive:true, maintainAspectRatio:true, cutout:'62%',
+      plugins: { legend: { position:'right', labels:{ font:{size:10}, padding:6, boxWidth:9 } } } }
+  });
+}
+
+function bar(id, labels, datasets, yK) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  new Chart(el, {
+    type: 'bar', data: { labels, datasets },
+    options: { responsive:true, maintainAspectRatio:true,
+      plugins: { legend:{ display:datasets.length>1, position:'top', labels:{font:{size:10},padding:7,boxWidth:9} },
+        tooltip:{ callbacks:{ label: c => '$'+c.raw.toLocaleString() } } },
+      scales: {
+        x: { grid:{display:false}, ticks:{font:{size:10}} },
+        y: { ticks:{ callback: v => yK ? '$'+(v/1000).toFixed(0)+'K' : v, font:{size:10} }, grid:{color:'rgba(0,0,0,0.04)'} }
+      }
+    }
+  });
+}
+
+donut('c-rev', ['Etsy','J.Jill/Custom','Shopify'], [11526,7275,5461], [G,GD,GL]);
+donut('c-exp', ['Etsy Fees','Advertising','Office','Taxes','Labor','Utilities','QB','Other'], [4051,1975,1103,915,450,367,227,424], [R,'#e07070',GD,'#e8c56a',GL,S,'#9b8ea0',GR]);
+donut('c-cogs', ['Packaging','Supplies','Seeds','Shipping'], [4762,3202,2180,400], [R,GD,GL,S]);
+donut('c-opex', ['Etsy Fees','Advertising','Office','Taxes','Labor','Other'], [4051,1975,1103,915,450,1019], [R,'#e07070',GD,'#e8c56a',GL,GR]);
+
+bar('c-annual', ['2021','2022','2023','2024','2025','2026 YTD'], [
+  { label:'Etsy', data:[91752,90895,121232,76357,69972,38239], backgroundColor:G, borderRadius:4 },
+  { label:'Shopify', data:[0,0,2384,4394,25635,29109], backgroundColor:GD, borderRadius:4 }
+], true);
+
+const sel = document.getElementById('c-seasonal');
+if (sel) new Chart(sel, {
+  type:'line',
+  data:{ labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    datasets:[
+      { label:'2022', data:[4342,6692,13173,10818,12188,8048,10192,8056,9228,4078,1864,2214], borderColor:'#ccc', tension:.3, pointRadius:2, borderWidth:1.5, fill:false },
+      { label:'2023', data:[6551,9058,19447,26426,17065,11984,9020,6464,6698,3890,2996,1634], borderColor:G, tension:.3, pointRadius:2, borderWidth:2.5, fill:false },
+      { label:'2024', data:[4490,4641,13063,14404,8654,4844,5975,6302,5279,3619,2241,2845], borderColor:R, tension:.3, pointRadius:2, borderWidth:1.5, fill:false },
+      { label:'2025', data:[7374,7291,10632,10378,8472,5477,5011,4852,4830,2422,1919,1315], borderColor:GD, tension:.3, pointRadius:2, borderWidth:1.5, fill:false }
+    ]
+  },
+  options:{ responsive:true, maintainAspectRatio:true,
+    plugins:{ legend:{ position:'top', labels:{font:{size:10},padding:7,boxWidth:9} }, tooltip:{callbacks:{label:c=>'$'+c.raw.toLocaleString()}} },
+    scales:{ x:{grid:{display:false},ticks:{font:{size:10}}}, y:{ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'K',font:{size:10}},grid:{color:'rgba(0,0,0,0.04)'}} }
+  }
+});
+
+bar('c-scenario', ['Current','Conservative\n+9%','Moderate\n+15%','Full\n+20%'],
+  [{ data:[16987,18516,19536,20386], backgroundColor:[GR,S,GL,G], borderRadius:4 }], true);
+
+// ── KPI TRACKER ──
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+function pct(n) { return n.toFixed(1) + '%'; }
+
+function calcKPIs() {
+  const etsy    = parseFloat(document.getElementById('t-etsy').value) || 0;
+  const shopify = parseFloat(document.getElementById('t-shopify').value) || 0;
+  const svc     = parseFloat(document.getElementById('t-services').value) || 0;
+  const cogs    = parseFloat(document.getElementById('t-cogs').value) || 0;
+  const opex    = parseFloat(document.getElementById('t-opex').value) || 0;
+  const orders  = parseFloat(document.getElementById('t-orders').value) || 1;
+  const ads     = parseFloat(document.getElementById('t-ads').value) || 0;
+
+  const rev     = etsy + shopify + svc;
+  const gp      = rev - cogs;
+  const gm      = rev > 0 ? gp / rev * 100 : 0;
+  const np      = rev - cogs - opex;
+  const nm      = rev > 0 ? np / rev * 100 : 0;
+  const channel = etsy + shopify;
+  const aov     = orders > 0 ? channel / orders : 0;
+  const shpPct  = channel > 0 ? shopify / channel * 100 : 0;
+  const adPct   = rev > 0 ? ads / rev * 100 : 0;
+  const totalExp = cogs + opex;
+
+  document.getElementById('o-rev').textContent   = fmt(rev);
+  document.getElementById('o-rev-s').textContent = 'Etsy + Shopify + Services';
+  document.getElementById('o-gp').textContent    = fmt(gp);
+  document.getElementById('o-gm').textContent    = pct(gm) + ' gross margin';
+  document.getElementById('o-gm').className      = 'ks ' + (gm >= 50 ? 'up' : gm >= 40 ? 'wn' : 'dn');
+  document.getElementById('o-np').textContent    = fmt(np);
+  document.getElementById('o-nm').textContent    = pct(nm) + ' net margin';
+  document.getElementById('o-nm').className      = 'ks ' + (nm >= 25 ? 'up' : nm >= 15 ? 'wn' : 'dn');
+  document.getElementById('o-exp').textContent   = fmt(totalExp);
+  document.getElementById('o-exp-s').textContent = 'COGS + Operating';
+  document.getElementById('o-aov').textContent   = '$' + aov.toFixed(2);
+  document.getElementById('o-aov-s').textContent = aov >= 80 ? '✓ Above target' : aov >= 60 ? 'Getting closer — target $80+' : 'Below target ($80+) — raise prices';
+  document.getElementById('o-aov-s').className   = 'ks ' + (aov >= 80 ? 'up' : aov >= 60 ? 'wn' : 'dn');
+  document.getElementById('o-shp').textContent   = pct(shpPct);
+  document.getElementById('o-shp-s').textContent = shpPct >= 55 ? '✓ Great channel mix' : 'Goal: grow toward 55–65%';
+  document.getElementById('o-shp-s').className   = 'ks ' + (shpPct >= 55 ? 'up' : shpPct >= 35 ? 'wn' : 'dn');
+  document.getElementById('o-adp').textContent   = pct(adPct);
+  document.getElementById('o-adp-s').textContent = adPct < 10 ? '✓ Under 10% target' : 'Target: under 10% of revenue';
+  document.getElementById('o-adp-s').className   = 'ks ' + (adPct < 10 ? 'up' : adPct < 15 ? 'wn' : 'dn');
+  document.getElementById('o-rpo').textContent   = '$' + aov.toFixed(2);
+  document.getElementById('o-rpo-s').textContent = 'Channel orders only';
+
+  // Health signals
+  const health = document.getElementById('o-health');
+  let signals = [];
+
+  if (gm >= 50) signals.push({t:'g', msg:`Gross margin is ${pct(gm)} — healthy. Your product costs are well controlled.`});
+  else signals.push({t:'r', msg:`Gross margin is ${pct(gm)} — lower than usual. Check if COGS have increased.`});
+
+  if (nm >= 25) signals.push({t:'g', msg:`Net margin is ${pct(nm)} — you're hitting or approaching your target. Strong month.`});
+  else if (nm >= 15) signals.push({t:'y', msg:`Net margin is ${pct(nm)}. Your target is 28–30%. Price increases and cost cuts will close this gap.`});
+  else signals.push({t:'r', msg:`Net margin is ${pct(nm)} — below healthy range. Prioritize pricing adjustments immediately.`});
+
+  if (adPct < 10) signals.push({t:'g', msg:`Ad spend is ${pct(adPct)} of revenue — within the target range. Good control.`});
+  else if (adPct < 15) signals.push({t:'y', msg:`Ad spend is ${pct(adPct)} of revenue. Target is under 10%. Pull conversion data to find what to trim.`});
+  else signals.push({t:'r', msg:`Ad spend is ${pct(adPct)} of revenue — higher than ideal. Review Etsy and Google ad ROI this month.`});
+
+  if (shpPct >= 55) signals.push({t:'g', msg:`Shopify is ${pct(shpPct)} of channel revenue — excellent channel mix and lower fees.`});
+  else if (shpPct >= 35) signals.push({t:'y', msg:`Shopify is ${pct(shpPct)} of channel revenue. Keep pushing customers toward your direct store.`});
+  else signals.push({t:'r', msg:`Shopify is only ${pct(shpPct)} of channel revenue. Heavy Etsy dependence means high fee burden.`});
+
+  if (aov >= 80) signals.push({t:'g', msg:`Average order value is $${aov.toFixed(0)} — above the $80 target. Great work.`});
+  else signals.push({t:'y', msg:`Average order value is $${aov.toFixed(0)}. Target is $80+. Price increases and 50-packet minimum incentive will help.`});
+
+  const icons = {g:'✅', y:'⚠️', r:'🚨'};
+  const cls   = {g:'ins g', y:'ins y', r:'ins r'};
+  health.innerHTML = signals.map(s =>
+    `<div class="${cls[s.t]}"><span>${icons[s.t]}</span><div>${s.msg}</div></div>`
+  ).join('');
+}
+
+function saveEntry() {
+  const month   = document.getElementById('t-month').value;
+  const etsy    = parseFloat(document.getElementById('t-etsy').value) || 0;
+  const shopify = parseFloat(document.getElementById('t-shopify').value) || 0;
+  const svc     = parseFloat(document.getElementById('t-services').value) || 0;
+  const cogs    = parseFloat(document.getElementById('t-cogs').value) || 0;
+  const opex    = parseFloat(document.getElementById('t-opex').value) || 0;
+  const orders  = parseFloat(document.getElementById('t-orders').value) || 1;
+  const ads     = parseFloat(document.getElementById('t-ads').value) || 0;
+
+  const rev    = etsy + shopify + svc;
+  const gp     = rev - cogs;
+  const np     = rev - cogs - opex;
+  const nm     = rev > 0 ? np / rev * 100 : 0;
+  const ch     = etsy + shopify;
+  const aov    = orders > 0 ? ch / orders : 0;
+  const shpPct = ch > 0 ? shopify / ch * 100 : 0;
+  const adPct  = rev > 0 ? ads / rev * 100 : 0;
+
+  const label = new Date(month + '-02').toLocaleDateString('en-US', {month:'short', year:'numeric'});
+
+  const stored = JSON.parse(localStorage.getItem('bs_kpi_history') || '[]');
+  const exists = stored.findIndex(e => e.month === month);
+  const entry  = { month, label, rev, gp, np, nm, aov, shpPct, adPct };
+  if (exists >= 0) stored[exists] = entry; else stored.push(entry);
+  stored.sort((a,b) => a.month > b.month ? -1 : 1);
+  localStorage.setItem('bs_kpi_history', JSON.stringify(stored));
+  renderHistory();
+}
+
+function renderHistory() {
+  const stored = JSON.parse(localStorage.getItem('bs_kpi_history') || '[]');
+  const tbody  = document.getElementById('t-history-body');
+  const baseline = `<tr style="background:var(--sage);">
+    <td><strong>Apr 2026</strong> <span class="tag g">Baseline</span></td>
+    <td>$24,692</td><td>$14,148</td><td>$4,636</td>
+    <td class="wn">18.8%</td><td>$59.36</td><td>32.2%</td><td class="dn">15.0%</td>
+    <td style="font-size:10px;color:var(--sl);">Pre-loaded</td></tr>`;
+
+  const rows = stored.map(e => {
+    const nmCls = e.nm >= 25 ? 'up' : e.nm >= 15 ? 'wn' : 'dn';
+    const adCls = e.adPct < 10 ? 'up' : e.adPct < 15 ? 'wn' : 'dn';
+    return `<tr>
+      <td><strong>${e.label}</strong></td>
+      <td>${fmt(e.rev)}</td>
+      <td>${fmt(e.gp)}</td>
+      <td>${fmt(e.np)}</td>
+      <td class="${nmCls}">${pct(e.nm)}</td>
+      <td>$${e.aov.toFixed(0)}</td>
+      <td>${pct(e.shpPct)}</td>
+      <td class="${adCls}">${pct(e.adPct)}</td>
+      <td><button onclick="deleteEntry('${e.month}')" style="font-size:10px;color:var(--rust);background:none;border:none;cursor:pointer;padding:0;">✕</button></td>
+    </tr>`;
+  }).join('');
+
+  tbody.innerHTML = baseline + rows;
+}
+
+function deleteEntry(month) {
+  const stored = JSON.parse(localStorage.getItem('bs_kpi_history') || '[]');
+  localStorage.setItem('bs_kpi_history', JSON.stringify(stored.filter(e => e.month !== month)));
+  renderHistory();
+}
+
+function clearHistory() {
+  if (confirm('Clear all saved months? The April 2026 baseline will stay.')) {
+    localStorage.removeItem('bs_kpi_history');
+    renderHistory();
+  }
+}
+
+// Init
+calcKPIs();
+renderHistory();
+
+</script>
+
+
+</body></html>
